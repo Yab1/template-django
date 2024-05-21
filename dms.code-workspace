@@ -1,0 +1,29 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.wordWrap": "on",
+        "editor.detectIndentation": true,
+        "prettier.singleQuote": false,
+        "prettier.tabWidth": 4,
+        "prettier.useTabs": false,
+        "[python]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": "explicit"
+            }
+        },
+        "isort.args": ["--profile", "black"],
+        "cSpell.words": [
+            "corsheaders",
+            "isort",
+            "nostatic",
+            "psycopg",
+            "viewset",
+            "whitenoise"
+        ]
+    }
+}
