@@ -1,0 +1,107 @@
+[tool.poetry]
+# Metadata and configuration of the project.
+name = "dms-backend-scaffold"
+version = "0.1.0"
+description = ""
+authors = ["Yab1 <yabilisanu@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+# The main dependencies required for the project to run.
+django = "^5.0.6"
+django-cors-headers = "^4.3.1"
+django-environ = "^0.11.2"
+django-extensions = "^3.2.3"
+django-filter = "^24.2"
+django-polymorphic = "^3.1.0"
+django-rest-polymorphic = "^0.1.10"
+django-storages = "^1.14.3"
+djangorestframework = "^3.15.1"
+gunicorn = "^22.0.0"
+pillow = "^10.3.0"
+psycopg2 = "^2.9.9"
+python = "^3.11"
+whitenoise = "^6.6.0"
+
+[tool.poetry.group.dev.dependencies]
+# Development dependencies required for the project, used during development and testing.
+django-debug-toolbar = "^4.3.0"
+django-stubs = "^5.0.0"
+djangorestframework-stubs = "^3.15.0"
+mypy = "^1.10.0"
+pre-commit = "^3.7.1"
+ruff = "^0.4.4"
+
+[build-system]
+# Lists the dependencies needed to build the project.
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "migrations",
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 120
+indent-width = 4
+
+# Assume Python 3.12
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = ["E4", "E7", "E9", "F", "I"]
+ignore = ["E722"]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+case-sensitive = true
