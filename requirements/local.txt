@@ -1,0 +1,12 @@
+-r base.txt
+
+django-debug-toolbar==4.3.0
+
+mypy==1.10.0
+
+django-stubs==5.0.0
+
+ruff==0.2.2
+pre-commit==3.6.2
+
+coloredlogs==15.0.1
