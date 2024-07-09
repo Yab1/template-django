@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 from config.env import APPS_DIR, BASE_DIR, env
 
@@ -17,15 +16,21 @@ ALLOWED_HOSTS = ["*"]
 
 LOCAL_APPS = [
     "core.api.apps.ApiConfig",
+    "core.authentication.apps.AuthenticationConfig",
+    "core.users.apps.UsersConfig",
 ]
 
-THIRD_PARTY_APPS = [
-    "rest_framework",
-    "django_filters",
+THIRD_PARTY_APPS: list[str] = [
+    "corsheaders",
+    "drf_spectacular",
     "django_extensions",
+    "django_filters",
+    "easyaudit",
+    "guardian",
+    "rest_framework",
 ]
-
-INSTALLED_APPS = [
+INSTALLED_APPS: list[str] = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -37,7 +42,8 @@ INSTALLED_APPS = [
     *LOCAL_APPS,
 ]
 
-MIDDLEWARE = [
+
+MIDDLEWARE: list[str] = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -47,11 +53,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "easyaudit.middleware.easyaudit.EasyAuditMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
-
-print(os.path.join(APPS_DIR, "templates"))
 
 TEMPLATES = [
     {
@@ -71,6 +76,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+ASGI_APPLICATION = "config.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -78,7 +92,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
 }
 
 # Password validation
@@ -99,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# AUTH_USER_MODEL = "users.BaseUser"
+AUTH_USER_MODEL = "users.Member"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -129,8 +143,26 @@ APP_DOMAIN = env("APP_DOMAIN", default="http://localhost:8000")  # type: ignore
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
+)
+
+ANONYMOUS_USER_NAME = None
+GUARDIAN_GET_CONTENT_TYPE = "polymorphic.contrib.guardian.get_polymorphic_base_content_type"
+
+from config.settings.logging import *  # noqa
 from config.settings.cors import *  # noqa
+from config.settings.files_and_storages import *  # noqa
+from config.settings.sessions import *  # noqa
+
 from config.settings.debug_toolbar.settings import *  # noqa
 from config.settings.debug_toolbar.setup import DebugToolbarSetup  # noqa
 
 INSTALLED_APPS, MIDDLEWARE = DebugToolbarSetup.do_settings(INSTALLED_APPS, MIDDLEWARE)
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django API Template",
+    "DESCRIPTION": "A reusable template for creating Django APIs quickly and efficiently. Includes best practices, configurations, and initial setup to jump start your Django projects.",  # noqa: E501
+    "VERSION": "1.0.0",
+}

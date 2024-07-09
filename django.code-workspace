@@ -18,12 +18,21 @@
         },
         "isort.args": ["--profile", "black"],
         "cSpell.words": [
+            "asgiref",
+            "colorlog",
             "corsheaders",
+            "easyaudit",
             "isort",
+            "levelname",
+            "mypy",
+            "namespacing",
             "nostatic",
+            "openapi",
             "psycopg",
+            "sessionid",
             "viewset",
-            "whitenoise"
+            "whitenoise",
+            "yapf"
         ]
     }
 }
