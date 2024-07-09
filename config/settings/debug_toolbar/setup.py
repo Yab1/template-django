@@ -42,14 +42,14 @@ class DebugToolbarSetup:
     """
 
     @staticmethod
-    def do_settings(INSTALLED_APPS, MIDDLEWARE, middleware_position=None):
+    def do_settings(INSTALLED_APPS, MIDDLEWARE, middleware_position=None):  # noqa: N803
         _show_toolbar: bool = show_toolbar()
         logger.info(f"Django Debug Toolbar in use: {_show_toolbar}")
 
         if not _show_toolbar:
             return INSTALLED_APPS, MIDDLEWARE
 
-        INSTALLED_APPS = INSTALLED_APPS + ["debug_toolbar"]
+        INSTALLED_APPS = INSTALLED_APPS + ["debug_toolbar"]  # noqa: N806
 
         # In order to deal with that:
         # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#add-the-middleware
@@ -62,13 +62,13 @@ class DebugToolbarSetup:
         debug_toolbar_middleware = "debug_toolbar.middleware.DebugToolbarMiddleware"
 
         if middleware_position is None:
-            MIDDLEWARE = MIDDLEWARE + [debug_toolbar_middleware]
+            MIDDLEWARE = MIDDLEWARE + [debug_toolbar_middleware]  # noqa: N806
         else:
             # Grab a new copy of the list, since insert mutates the internal structure
             _middleware = MIDDLEWARE[::]
             _middleware.insert(middleware_position, debug_toolbar_middleware)
 
-            MIDDLEWARE = _middleware
+            MIDDLEWARE = _middleware  # noqa: N806
 
         return INSTALLED_APPS, MIDDLEWARE
 
@@ -79,4 +79,4 @@ class DebugToolbarSetup:
 
         import debug_toolbar  # noqa
 
-        return urlpatterns + [path("__debug__/", include(debug_toolbar.urls))]  # type: ignore
+        return urlpatterns + [path("__debug__/", include(debug_toolbar.urls))]
