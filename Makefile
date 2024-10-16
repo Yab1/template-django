@@ -11,6 +11,18 @@ collectstatic:
 	@echo "Collecting static files..."
 	@python manage.py collectstatic --noinput
 
+# Flush the database (removes all data and resets it)
+.PHONY: flush
+flush: 
+	@echo "Flushing the database..."
+	@python manage.py flush
+
+# Generate API schema
+.PHONY: generate-schema
+generate-schema:
+	@echo "Generating API schema..."
+	@python manage.py spectacular --color --file schema.yml
+
 # Install all dependencies (production and development)
 .PHONY: install-all-requirements
 install-all-requirements:
