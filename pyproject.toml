@@ -7,7 +7,8 @@ target-version = "py312"
 output-format = "grouped"
 respect-gitignore = true
 show-fixes = true
-show-source = true
+fix = true
+unsafe-fixes = true
 exclude = [ 
     ".direnv",
     ".eggs",
@@ -24,7 +25,6 @@ exclude = [
     ".ruff_cache",
     ".svn",
     ".tox",
-    ".venv",
     ".vscode",
     "__pypackages__",
     "_build",
@@ -34,11 +34,12 @@ exclude = [
     "migrations",
     "node_modules",
     "site-packages",
+    ".venv",
     "venv",
 ]
 
 [tool.ruff.lint]
-select = ["COM", "DJ", "E", "F", "I", "LOG", "N", "PIE", "Q", "RET", "T10", "T20", "W", ]
+select = ["COM", "DJ", "E", "F", "I", "LOG", "N", "PIE", "Q", "RET", "T10", "T20", "W", "I001"]
 ignore = ["DJ001", "E722"]
 fixable = ["ALL"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
@@ -57,3 +58,5 @@ convention = "google"
 # Isort Settings
 [tool.ruff.lint.isort]
 case-sensitive = true
+known-first-party = ["core", "config"]
+known-third-party = ["django", "rest_framework", "drf_yasg"]
