@@ -1,16 +1,33 @@
 import os
 
+import firebase_admin
+from firebase_admin import credentials
+
 from config.env import APPS_DIR, BASE_DIR, env
 
 env.read_env(os.path.join(BASE_DIR, ".env"))
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-eb7x*euse3jj879p3vtb_^gbolpga@rl$18pqnn93@t0n*@!$a"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", default=True)  # type: ignore
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+
+CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
+
+CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ORIGIN_WHITELIST", default=[])
+
+# Initialize Firebase only if not already initialized
+try:
+    firebase_admin.get_app()
+except ValueError:
+    # Initialize Firebase
+    cred = credentials.Certificate(
+        os.path.join(BASE_DIR, "config", "django", "tena-adam-firbase-messeging.json"),
+    )
+    firebase_admin.initialize_app(cred)
+
 
 # Application definition
 
@@ -22,12 +39,16 @@ LOCAL_APPS = [
 
 THIRD_PARTY_APPS: list[str] = [
     "corsheaders",
-    "drf_spectacular",
+    "drf_yasg",
+    "django_celery_beat",
+    "django_celery_results",
     "django_extensions",
     "django_filters",
     "easyaudit",
     "guardian",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 INSTALLED_APPS: list[str] = [
     "daphne",
@@ -90,8 +111,12 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env.str("DB_NAME"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.str("DB_PORT", default="5432"),
     },
 }
 
@@ -113,7 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "users.Member"
+AUTH_USER_MODEL = "users.User"
+
+# API_AUTH_TYPE = "JWT" or "SESSION"
+API_AUTH_TYPE = "JWT"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -138,11 +166,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "core.api.exception_handler.drf_exception_handler",
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_RENDERER_CLASSES": ("core.api.renderers.CustomJSONRenderer",),
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 APP_DOMAIN = env("APP_DOMAIN", default="http://localhost:8000")  # type: ignore
@@ -155,22 +184,21 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ANONYMOUS_USER_NAME = None
-GUARDIAN_GET_CONTENT_TYPE = (
-    "polymorphic.contrib.guardian.get_polymorphic_base_content_type"
-)
+GUARDIAN_GET_CONTENT_TYPE = "polymorphic.contrib.guardian.get_polymorphic_base_content_type"
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    },
+}
 
 from config.settings.logging import *  # noqa
 from config.settings.cors import *  # noqa
 from config.settings.files_and_storages import *  # noqa
-from config.settings.sessions import *  # noqa
+from config.settings.jwt import *  # noqa
+from config.settings.celery import *  # noqa
 
 from config.settings.debug_toolbar.settings import *  # noqa
 from config.settings.debug_toolbar.setup import DebugToolbarSetup  # noqa
 
 INSTALLED_APPS, MIDDLEWARE = DebugToolbarSetup.do_settings(INSTALLED_APPS, MIDDLEWARE)
-
-SPECTACULAR_SETTINGS = {
-    "TITLE": "Django API Template",
-    "DESCRIPTION": "A reusable template for creating Django APIs quickly and efficiently. Includes best practices, configurations, and initial setup to jump start your Django projects.",  # noqa: E501
-    "VERSION": "1.0.0",
-}
