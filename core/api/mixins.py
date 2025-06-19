@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import auth
 from rest_framework.authentication import BaseAuthentication, SessionAuthentication
 from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 def get_auth_header(headers):
@@ -59,9 +60,19 @@ class CsrfExemptedSessionAuthentication(SessionAuthentication):
         return
 
 
-class ApiAuthMixin:
-    authentication_classes: Sequence[Type[BaseAuthentication]] = [
-        CsrfExemptedSessionAuthentication,
-        SessionAsHeaderAuthentication,
-    ]
-    permission_classes: Sequence[Type[BasePermission]] = [IsAuthenticated]
+if getattr(settings, "API_AUTH_TYPE", "JWT") == "SESSION":
+
+    class ApiAuthMixin:
+        authentication_classes: Sequence[Type[BaseAuthentication]] = [
+            CsrfExemptedSessionAuthentication,
+            SessionAsHeaderAuthentication,
+        ]
+        permission_classes: Sequence[Type[BasePermission]] = [IsAuthenticated]
+
+else:
+
+    class ApiAuthMixin:
+        authentication_classes: Sequence[Type[BaseAuthentication]] = [
+            JWTAuthentication,
+        ]
+        permission_classes: Sequence[Type[BasePermission]] = [IsAuthenticated]
