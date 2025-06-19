@@ -23,7 +23,7 @@ HANDLERS = {
     },
     "my_handler": {
         "class": "logging.handlers.RotatingFileHandler",
-        "filename": f"{BASE_DIR}/logs/tena_adam.log",
+        "filename": f"{BASE_DIR}/logs/django.log",
         "mode": "a",
         "encoding": "utf-8",
         "formatter": "simple",
@@ -32,7 +32,7 @@ HANDLERS = {
     },
     "my_handler_detailed": {
         "class": "logging.handlers.RotatingFileHandler",
-        "filename": f"{BASE_DIR}/logs/tena_adam_detailed.log",
+        "filename": f"{BASE_DIR}/logs/django_detailed.log",
         "mode": "a",
         "formatter": "verbose",
         "backupCount": 5,
