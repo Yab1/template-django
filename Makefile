@@ -64,7 +64,7 @@ migrate:
 .PHONY: run-server
 run-server:
 	@echo "Running the development server..."
-	@python manage.py runserver
+	@python manage.py runserver 8003
 
 # Open the Django shell
 .PHONY: shell
@@ -82,3 +82,15 @@ superuser:
 .PHONY: update
 update: install-all-requirements migrate install-pre-commit
 	@echo "Updating project..."
+
+# Run celery worker
+.PHONY: run-celery
+run-celery:
+	@echo "Running celery worker..."
+	@celery -A config.settings.celery worker --loglevel=info --pool=solo
+
+# Run celery beat
+.PHONY: run-celery-beat
+run-celery-beat:
+	@echo "Running celery beat..."
+	@celery -A config.settings.celery beat --loglevel=info
