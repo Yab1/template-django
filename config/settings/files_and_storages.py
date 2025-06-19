@@ -1,7 +1,26 @@
 import os
 
-from config.env import BASE_DIR
+from config.env import BASE_DIR, env
 
+# Media
 MEDIA_ROOT_NAME = "media"
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_ROOT_NAME)
 MEDIA_URL = f"/{MEDIA_ROOT_NAME}/"
+
+# Storage
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
+
+# Minio
+MINIO_STORAGE_ENDPOINT = env.str("MINIO_STORAGE_ENDPOINT")
+MINIO_STORAGE_ACCESS_KEY = env.str("MINIO_ROOT_USER")
+MINIO_STORAGE_SECRET_KEY = env.str("MINIO_ROOT_PASSWORD")
+MINIO_STORAGE_USE_HTTPS = env.bool("MINIO_STORAGE_USE_HTTPS", default=False)
+
+# Media bucket
+MINIO_STORAGE_MEDIA_BUCKET_NAME = env.str("MINIO_STORAGE_MEDIA_BUCKET_NAME")
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+
+# Static bucket
+MINIO_STORAGE_STATIC_BUCKET_NAME = env.str("MINIO_STORAGE_STATIC_BUCKET_NAME")
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
