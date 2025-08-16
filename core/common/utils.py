@@ -3,6 +3,8 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 
+from core.api.exceptions import handle_api_exception
+
 
 def get_list(model_or_queryset, **kwargs):
     try:
@@ -16,6 +18,18 @@ def get_object(model_or_queryset, **kwargs):
         return get_object_or_404(model_or_queryset, **kwargs)
     except Http404:
         return None
+
+
+def update_object(obj, **kwargs):
+    try:
+        for key, value in kwargs.items():
+            setattr(obj, key, value)
+
+        obj.save()
+
+        return obj
+    except Exception as e:
+        raise handle_api_exception(e, f"update {obj.__class__.__name__}")
 
 
 def create_serializer_class(name, fields):
