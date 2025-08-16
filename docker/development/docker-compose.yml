@@ -1,9 +1,64 @@
 services:
-  postgres:
-    image: postgres
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    # Django application service
+  django_template_django_dev:
+    container_name: django_template_django_dev
+    build:
+      context: ../..
+      dockerfile: docker/development/Dockerfile
     ports:
-      - "5432:5432"
+      - "8007:8007"
+    restart: on-failure
+    networks:
+      - django_template_dev_network
+
+  # Celery worker service
+  django_template_celery_dev:
+    container_name: django_template_celery_dev
+    build:
+      context: ../..
+      dockerfile: docker/development/Dockerfile 
+    command: celery -A config.settings.celery.app worker --loglevel=info --pool=solo
+    depends_on:
+      django_template_django_dev:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - django_template_dev_network
+
+  # Celery Beat service
+  django_template_celery_beat_dev:
+    container_name: django_template_celery_beat_dev
+    build:
+      context: ../..
+      dockerfile: docker/development/Dockerfile
+    command: celery -A config.settings.celery.app beat --loglevel=info
+    depends_on:
+      django_template_django_dev:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - django_template_dev_network
+
+  # Flower monitoring
+  django_template_flower_dev:
+    container_name: django_template_flower_dev
+    build:
+      context: ../..
+      dockerfile: docker/development/Dockerfile
+    command: celery -A config.settings.celery.app flower --loglevel=info --port=5555
+    ports:
+      - "5557:5555"
+    depends_on:
+      django_template_django_dev:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - django_template_dev_network
+
+volumes:
+  django_template_media_dev:
+
+networks:
+  django_template_dev_network:
+    name: django_template_dev_network
+    external: true

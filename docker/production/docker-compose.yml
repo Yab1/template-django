@@ -1,0 +1,154 @@
+services:
+  # PostgreSQL service
+  django_template_db_production:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5437:5432"
+    volumes:
+      - django_template_postgres_data_production:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - django_template_network_production
+
+  # MinIO service
+  django_template_minio_production:
+    image: minio/minio:latest
+    volumes:
+      - django_template_minio_data_production:/data
+    ports:
+      - "9007:9000"   # MinIO API
+      - "9008:9001"   # MinIO Console (Web UI)
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: always
+    networks:
+      - django_template_network_production
+
+  # Django service
+  django_template_django_production:
+    build:
+      context: ../..
+      dockerfile: docker/production/Dockerfile
+    env_file:
+      - ../../.env
+    volumes:
+      - .:/usr/src/app
+      - django_template_media_production:/usr/src/app/media
+    ports:
+      - "8007:8004"
+    depends_on:
+      django_template_db_production:  # Fixed service name
+        condition: service_healthy
+      django_template_rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - django_template_network_production
+
+  # Celery service
+  django_template_celery:
+    build:
+      context: ../..
+      dockerfile: docker/production/Dockerfile
+    command: celery -A config.settings.celery.app worker --loglevel=info --pool=solo
+    volumes:
+      - .:/usr/src/app
+      - django_template_media_production:/usr/src/app/media
+    depends_on:
+      django_template_redis_production:
+        condition: service_started
+      django_template_rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - django_template_network_production
+
+  # Celery Beat service
+  django_template_celery_beat:
+    build:
+      context: ../..
+      dockerfile: docker/production/Dockerfile
+    command: celery -A config.settings.celery.app beat --loglevel=info
+    volumes:
+      - .:/usr/src/app
+      - django_template_media_production:/usr/src/app/media
+    depends_on:
+      django_template_redis_production:
+        condition: service_started
+      django_template_rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - django_template_network_production
+
+  # Flower monitoring service
+  django_template_flower:
+    build:
+      context: ../..
+      dockerfile: docker/production/Dockerfile
+    command: celery -A config.settings.celery.app flower --loglevel=info --port=5555
+    ports:
+      - "5557:5555"
+    volumes:
+      - .:/usr/src/app
+      - django_template_media_production:/usr/src/app/media
+    depends_on:
+      django_template_redis_production:
+        condition: service_started
+      django_template_rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - django_template_network_production
+
+  # Redis service
+  django_template_redis_production:
+    image: redis:7-alpine
+    ports:
+      - "6387:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - django_template_network_production
+
+  # RabbitMQ service
+  django_template_rabbitmq:
+    image: rabbitmq:3.13-management-alpine  # Added management plugin
+    ports:
+      - "5677:5672"
+      - "15677:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      - django_template_network_production
+
+volumes:
+  django_template_postgres_data_production:
+  django_template_media_production:  # Added media volume
+  django_template_minio_data_production:
+
+networks:
+  django_template_network_production:  # Fixed
+    driver: bridge
