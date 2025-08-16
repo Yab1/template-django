@@ -4,7 +4,7 @@ from config.env import APPS_DIR, BASE_DIR, env
 
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
-SECRET_KEY = env("DJANGO_SECRET_KEY")
+SECRET_KEY = "django-insecure-eb7x*euse3jj879p3vtb_^gbolpga@rl$18pqnn93@t0n*@!$a"
 
 DEBUG = env.bool("DJANGO_DEBUG", default=True)  # type: ignore
 
