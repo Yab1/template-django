@@ -1,15 +1,12 @@
 import os
 
-import firebase_admin
-from firebase_admin import credentials
-
 from config.env import APPS_DIR, BASE_DIR, env
 
 env.read_env(os.path.join(BASE_DIR, ".env"))
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-eb7x*euse3jj879p3vtb_^gbolpga@rl$18pqnn93@t0n*@!$a"
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
+SECRET_KEY = env("DJANGO_SECRET_KEY")
+
 DEBUG = env.bool("DJANGO_DEBUG", default=True)  # type: ignore
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
@@ -18,19 +15,7 @@ CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
 CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ORIGIN_WHITELIST", default=[])
 
-# Initialize Firebase only if not already initialized
-try:
-    firebase_admin.get_app()
-except ValueError:
-    # Initialize Firebase
-    cred = credentials.Certificate(
-        os.path.join(BASE_DIR, "config", "django", "tena-adam-firbase-messeging.json"),
-    )
-    firebase_admin.initialize_app(cred)
-
-
 # Application definition
-
 LOCAL_APPS = [
     "core.api.apps.ApiConfig",
     "core.authentication.apps.AuthenticationConfig",

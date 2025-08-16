@@ -18,6 +18,8 @@ CELERY_TASK_SOFT_TIME_LIMIT = 20  # seconds
 CELERY_TASK_TIME_LIMIT = 30  # seconds
 CELERY_TASK_MAX_RETRIES = 3
 
+# Celery Beat Schedule
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.base")
 
