@@ -14,16 +14,10 @@ class CustomJSONRenderer(JSONRenderer):
                 return data
 
         if isinstance(data, dict):
-            # Handle DRF validation errors
+            # Handle DRF validation errors with our custom format
             if "message" in data:
-                error_message = data["message"]
-                if "extra" in data and isinstance(data["extra"], dict):
-                    if "fields" in data["extra"]:
-                        field_errors = data["extra"]["fields"]
-                        if isinstance(field_errors, list):
-                            field_errors = [str(err) for err in field_errors]
-                            return f"{error_message}: {"; ".join(field_errors)}"  # Fixed line
-                return error_message
+                return data["message"]
+                # Don't stringify the extra data, let it remain as object
 
             # Handle other dictionary error formats
             error_parts = []
@@ -57,15 +51,30 @@ class CustomJSONRenderer(JSONRenderer):
             result_data = data
 
         if response and response.status_code >= 400:
-            formatted_data = {
-                "status": "error",
-                "result": None,
-                "meta": {
-                    "version": "v1",
-                    **additional_meta,
-                },
-                "message": self._format_error_message(data),
-            }
+            # For error responses, preserve the structure from exception handler
+            if isinstance(data, dict) and "message" in data and "extra" in data:
+                # Data is already formatted by our exception handler
+                formatted_data = {
+                    "status": "error",
+                    "result": None,
+                    "meta": {
+                        "version": "v1",
+                        **additional_meta,
+                    },
+                    "message": data["message"],
+                    "extra": data["extra"],  # Preserve the extra structure
+                }
+            else:
+                # Fallback for other error formats
+                formatted_data = {
+                    "status": "error",
+                    "result": None,
+                    "meta": {
+                        "version": "v1",
+                        **additional_meta,
+                    },
+                    "message": self._format_error_message(data),
+                }
         else:
             formatted_data = {
                 "status": "success",
