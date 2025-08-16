@@ -1,7 +1,7 @@
-from core.users.models import Member
+from core.users.models import User
 
 
-def user_get_login_data(*, current_user: Member):
+def user_get_login_data(*, current_user: User):
     return {
         "id": getattr(current_user, "id", ""),
         "email": getattr(current_user, "email", ""),

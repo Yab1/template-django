@@ -71,7 +71,7 @@ makemigrate:
 .PHONY: run-server
 run-server:
 	@echo "Running the development server..."
-	@python manage.py runserver 8007
+	@python manage.py runserver 8000
 
 # Open the Django shell
 .PHONY: shell

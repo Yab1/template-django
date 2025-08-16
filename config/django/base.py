@@ -19,6 +19,7 @@ LOCAL_APPS = [
     "core.api.apps.ApiConfig",
     "core.authentication.apps.AuthenticationConfig",
     "core.users.apps.UsersConfig",
+    "core.documents.apps.DocumentsConfig",
 ]
 
 THIRD_PARTY_APPS: list[str] = [
