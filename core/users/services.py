@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .models import Member
+from .models import User
 
 
 def user_create(
@@ -13,9 +13,9 @@ def user_create(
     is_staff: bool = False,
     is_superuser: bool = False,
     password: Optional[str] = None,
-) -> Member:
+) -> User:
     return (
-        Member.objects.create_user(
+        User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
             email=email,

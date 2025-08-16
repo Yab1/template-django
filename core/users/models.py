@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager as BUM  # noqa: N817
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 from core.common.models import BaseModel
 
@@ -38,24 +37,14 @@ class BaseUserManager(BUM):
 
 class BaseUser(BaseModel):
     class Meta:
-        verbose_name: str = "User"
-        verbose_name_plural: str = "Users"
+        verbose_name: str = "BaseUser"
+        verbose_name_plural: str = "BaseUsers"
 
 
-class Member(BaseUser, AbstractUser, PermissionsMixin):
+class User(BaseUser, AbstractUser, PermissionsMixin):
     username = None
-    email = models.EmailField(
-        _("email address"),
-        blank=False,
-        max_length=255,
-        unique=True,
-        help_text=_("Enter the email address of the employee."),
-    )
-    phone_number = models.PositiveBigIntegerField(
-        _("phone number"),
-        unique=True,
-        help_text=_("Enter the phone number of the employee."),
-    )
+    email = models.EmailField(blank=False, max_length=255, unique=True)
+    phone_number = models.PositiveBigIntegerField(unique=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -68,8 +57,8 @@ class Member(BaseUser, AbstractUser, PermissionsMixin):
     REQUIRED_FIELDS = ["first_name", "last_name", "phone_number"]
 
     class Meta:
-        verbose_name: str = "Member"
-        verbose_name_plural: str = "Members"
+        verbose_name: str = "User"
+        verbose_name_plural: str = "Users"
 
     def __str__(self) -> str:
         return f"{self.full_name} - {self.email}"

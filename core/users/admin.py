@@ -1,13 +1,13 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 
-from .models import Member
+from .models import User
 from .services import user_create
 
 
-@admin.register(Member)
-class MemberAdmin(admin.ModelAdmin):
-    base_model = Member
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    base_model = User
     list_display: list[str] = [
         "email",
         "full_name",
