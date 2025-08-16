@@ -60,11 +60,18 @@ migrate:
 	@echo "Applying migrations..."
 	@python manage.py migrate
 
+# Run makemigrations and migrate in sequence
+.PHONY: makemigrate
+makemigrate:
+	@echo "Running makemigrations and migrate..."
+	@python manage.py makemigrations
+	@python manage.py migrate
+
 # Run the development server
 .PHONY: run-server
 run-server:
 	@echo "Running the development server..."
-	@python manage.py runserver 8003
+	@python manage.py runserver 8007
 
 # Open the Django shell
 .PHONY: shell
@@ -94,3 +101,9 @@ run-celery:
 run-celery-beat:
 	@echo "Running celery beat..."
 	@celery -A config.settings.celery beat --loglevel=info
+
+# Run celery worker and beat together
+.PHONY: run-celery-all
+run-celery-all:
+	@echo "Running celery worker and beat..."
+	@celery -A config.settings.celery worker --loglevel=info --pool=solo --beat
