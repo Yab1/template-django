@@ -179,6 +179,7 @@ SWAGGER_SETTINGS = {
 
 from config.settings.logging import *  # noqa
 from config.settings.cors import *  # noqa
+from config.settings.google_oauth2 import *  # noqa
 from config.settings.files_and_storages import *  # noqa
 from config.settings.jwt import *  # noqa
 from config.settings.celery import *  # noqa
