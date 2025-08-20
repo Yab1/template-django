@@ -47,3 +47,6 @@ django-celery-beat==2.6.0
 # Server and Deployment
 gunicorn==22.0.0
 setuptools==70.3.0
+
+# Error Tracking
+sentry-sdk==2.30.0
