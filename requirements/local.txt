@@ -9,4 +9,7 @@ django-stubs==5.0.0
 ruff==0.2.2
 pre-commit==3.6.2
 
-coloredlogs==15.0.1
+# Styling and Logging
+rich==14.1.0
+
+
