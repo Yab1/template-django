@@ -56,7 +56,7 @@ HANDLERS = {
         "class": "logging.handlers.RotatingFileHandler",
         "filename": f"{BASE_DIR}/logs/django_detailed.log",
         "mode": "a",
-        "formatter": "simple",
+        "formatter": "verbose",
         "backupCount": 5,
         "maxBytes": 1024 * 1024 * 5,  # 5 MB
     },
