@@ -1,0 +1,123 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django Debug (Port 8000)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "0.0.0.0:8000"],
+      "django": true,
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.django.base",
+        "DJANGO_DEBUG": "True"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/venv/bin/python"
+    },
+    {
+      "name": "Django Debug (Localhost 8000)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "127.0.0.1:8000"],
+      "django": true,
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.django.base",
+        "DJANGO_DEBUG": "True"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/venv/bin/python"
+    },
+    {
+      "name": "Django Debug (Production Settings)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "0.0.0.0:8000"],
+      "django": true,
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.django.production",
+        "DJANGO_DEBUG": "False"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/venv/bin/python"
+    },
+    {
+      "name": "Celery Worker",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "args": [
+        "-A",
+        "config.settings.celery",
+        "worker",
+        "--loglevel=info",
+        "--pool=solo"
+      ],
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.django.base",
+        "DJANGO_DEBUG": "True"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/venv/bin/python"
+    },
+    {
+      "name": "Celery Beat",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "args": ["-A", "config.settings.celery", "beat", "--loglevel=info"],
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.django.base",
+        "DJANGO_DEBUG": "True"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/venv/bin/python"
+    },
+    {
+      "name": "Celery Flower",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "args": ["-A", "config.settings.celery", "flower", "--loglevel=info"],
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "config.django.base",
+        "DJANGO_DEBUG": "True"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/venv/bin/python"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Django + Celery Worker + Celery Beat",
+      "configurations": [
+        "Django Debug (Port 8000)",
+        "Celery Worker",
+        "Celery Beat"
+      ]
+    },
+    {
+      "name": "Django + Celery Worker + Celery Beat + Flower",
+      "configurations": [
+        "Django Debug (Port 8000)",
+        "Celery Worker",
+        "Celery Beat",
+        "Celery Flower"
+      ]
+    }
+  ]
+}

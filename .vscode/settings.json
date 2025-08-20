@@ -9,7 +9,36 @@
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "python.languageServer": "None"
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/venv": false
+  },
+  "python.envFile": "${workspaceFolder}/.env",
+  "python.languageServer": "None",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#715069",
+    "activityBar.background": "#715069",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#8b956a",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#715069",
+    "statusBar.background": "#533b4d",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#715069",
+    "statusBarItem.remoteBackground": "#533b4d",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#533b4d",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#533b4d99",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#533b4d"
   // "python.languageServer": "Pylance",
   // "python.analysis.typeCheckingMode": "basic",
   // "python.analysis.autoImportCompletions": true
