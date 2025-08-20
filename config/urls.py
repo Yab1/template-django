@@ -14,7 +14,7 @@ schema_view = get_schema_view(
         description="The backend API for Django",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="yeabseradeveloper@gmail.com"),
-        # license=openapi.License(name="BSD License"),
+        license=openapi.License(name="BSD License"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
